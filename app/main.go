@@ -27,25 +27,5 @@ func main() {
 	}
 	defer db.Close()
 
- // Test Connection
-	err = db.Ping()
-	if err != nil {
-			fmt.Println(err)
-	}
-	fmt.Println("Successfully connected!")
-	 // Check if "users" table exist
-    var exists bool
-    err = db.QueryRow("SELECT * FROM users").Scan(&exists)
-    if err != nil {
-        fmt.Println(err)
-    }
-    if exists {
-        fmt.Println("Usersテーブルはあります！！")
-    } else {
-        fmt.Println("Usersテーブルは存在しません")
-    }
-
+	// db.Query()
 }
-
-// INSERT users VALUES (99. "takenari");
-// INSERT INTO users (id, name) VALUES (99, 'たけなり');

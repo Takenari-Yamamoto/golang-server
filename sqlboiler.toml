@@ -1,0 +1,10 @@
+pkgname="dbmodel"
+output="domain/entity"
+
+[psql]
+dbname = "mydb"
+user = "myuser"
+pass = "mypassword"
+host = "localhost"
+port = "5432"
+sslmode = "disable"
