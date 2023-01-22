@@ -1,47 +1,51 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/volatiletech/sqlboiler/v4/boil"
-
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
 type User struct {
-	id int
-	name string
+	Id int
+	Name string
 }
-
-// リクエストを処理する関数
-func handler(w http.ResponseWriter, r *http.Request) {
-  fmt.Println(w, "Hello World from Go.")
-}
-
+// psql -h 127.0.0.1 -p 5433 -U postgres test_db
 func main() {
 
-	db, err := sqlx.Connect("postgres", "user=username password=password dbname=dbname sslmode=disable")
+	log.Fatal(http.ListenAndServe(":8000", nil))
+
+	db, err := sql.Open("postgres", "user=myuser password=mypassword dbname=mydb sslmode=disable")
 	if err != nil {
-			fmt.Println("データベースの接続に失敗しました")
-			log.Fatal(err)
+		fmt.Println("データベースの接続に成功しました")
+		log.Fatal(err)
+	} else {
+		fmt.Println("データベースの接続に成功しました")
 	}
+	defer db.Close()
 
-	 // set the connection for boil
-    boil.SetDB(db)
-
-    // http.HandleFunc("/hello", handler)
-
-    // 8080ポートで起動
-    http.ListenAndServe(":8000", nil)
-
-	// if err != nil {
-	// 	fmt.Println("HTTPサーバーが起動しました")
-	// 	http.HandleFunc("/", handler)
-	// } else {
-	// 	fmt.Println("エラーです")
-	// }
+ // Test Connection
+	err = db.Ping()
+	if err != nil {
+			fmt.Println(err)
+	}
+	fmt.Println("Successfully connected!")
+	 // Check if "users" table exist
+    var exists bool
+    err = db.QueryRow("SELECT * FROM users").Scan(&exists)
+    if err != nil {
+        fmt.Println(err)
+    }
+    if exists {
+        fmt.Println("Usersテーブルはあります！！")
+    } else {
+        fmt.Println("Usersテーブルは存在しません")
+    }
 
 }
+
+// INSERT users VALUES (99. "takenari");
+// INSERT INTO users (id, name) VALUES (99, 'たけなり');
